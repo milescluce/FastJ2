@@ -1,11 +1,12 @@
 from pathlib import Path
-from typing import Callable
+from typing import Callable, Optional
 
 from jinja2 import Environment, FileSystemLoader
 from loguru import logger as log
 from starlette.responses import HTMLResponse
 from toomanyconfigs import CWD
 from toomanyconfigs.cwd import CWDNamespace
+
 
 def default_error_method(e: Exception, template_name: str, context: dict) -> HTMLResponse:
     """Default error handler for template rendering failures"""
@@ -39,29 +40,32 @@ def default_error_method(e: Exception, template_name: str, context: dict) -> HTM
     """
     return HTMLResponse(fallback_html, status_code=500)
 
+
 class FastJ2(CWD, Environment):
     templates: CWDNamespace
 
     def __init__(
         self,
-        error_method: Callable = default_error_method
+        error_method: Optional[Callable[[Exception, str, dict], HTMLResponse]] = None,
+        *cwd_args
     ):
-        CWD.__init__(
-            self,
-        )
+        CWD.__init__(self, "templates/", *cwd_args)
         Environment.__init__(
             self,
-            FileSystemLoader(Path(self.templates._path)) #type: ignore
+            loader=FileSystemLoader(Path(self.templates._path))  # type: ignore
         )
-        self.error_method = error_method
+        self.error_method = error_method or default_error_method
+        log.success(f"{self}: Successfully initialized FastJ2 Templater for FastAPI with params:\n  - path={self.cwd}\n  - cwd_args={cwd_args}\n  - error_method={self.error_method}")
 
-    def safe_render(self, template_name: str, **context):
+    def __repr__(self):
+        return f"[FastJ2.{self.cwd.name}]"
+
+    def safe_render(self, template_name: str, **context) -> HTMLResponse:
         """
         Safely render a template with comprehensive error handling and fallback.
 
         Args:
             template_name: Name of the template file to render
-            fallback_title: Title to show in fallback HTML if template fails
             **context: Template context variables
 
         Returns:
@@ -77,11 +81,16 @@ class FastJ2(CWD, Environment):
         except Exception as e:
             import traceback
             full_traceback = traceback.format_exc()
-            log.error(f"Exception rendering template '{template_name}': {type(e).__name__}: {e}")
-            log.error(f"Full traceback:\n{full_traceback}")
-            log.error(f"Template context keys: {list(context.keys())}")
+            log.error(f"{self}: Exception rendering template '{template_name}': {type(e).__name__}: {e}\n{full_traceback}\nTemplate context: {context}")
+            return self.error_method(e, template_name, context)
 
-            if self.error_method(e): return self.error_method(e)
-
-FastJ2()
-log.debug(FastJ2)
+    def safe_render_string(self, template_string: str, **context) -> HTMLResponse:
+        """Render a template from string with safe error handling"""
+        try:
+            template = self.from_string(template_string)
+            rendered_html = template.render(**context)
+            log.debug("String template rendered successfully")
+            return HTMLResponse(rendered_html)
+        except Exception as e:
+            log.error(f"Exception rendering string template: {type(e).__name__}: {e}")
+            return self.error_method(e, "string_template", context)
