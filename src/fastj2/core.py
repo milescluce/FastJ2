@@ -46,10 +46,11 @@ class FastJ2(CWD, Environment):
 
     def __init__(
         self,
+        *cwd_args,
         error_method: Optional[Callable[[Exception, str, dict], HTMLResponse]] = None,
-        *cwd_args
+        cwd: Path = Path.cwd(),
     ):
-        CWD.__init__(self, "templates/", *cwd_args)
+        CWD.__init__(self, "templates/", *cwd_args, path=cwd)
         Environment.__init__(
             self,
             loader=FileSystemLoader(Path(self.templates._path))  # type: ignore
