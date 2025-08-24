@@ -1,6 +1,6 @@
 [project]
 name = "fastj2"
-version = "0.1.11"
+version = "0.1.12"
 description = ""
 authors = [
     {name = "genderlesspit",email = "59433707+genderlesspit@users.noreply.github.com"}
@@ -10,7 +10,7 @@ requires-python =  ">=3.13,<4.0"
 dependencies = [
     "starlette (>=0.47.2,<0.48.0)",
     "loguru (>=0.7.3,<0.8.0)",
-    "toomanyconfigs (>=0.2.81,<0.3.0)"
+    "toomanyconfigs (>=0.2.82,<0.3.0)"
 ]
 
 [tool.poetry]

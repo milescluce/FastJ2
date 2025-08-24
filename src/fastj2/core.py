@@ -82,6 +82,8 @@ class FastJ2(CWD, Environment):
         except Exception as e:
             import traceback
             full_traceback = traceback.format_exc()
+            for each in context:
+                context[each] = f"{each[:100]} ..."
             log.error(f"{self}: Exception rendering template '{template_name}': {type(e).__name__}: {e}\n{full_traceback}\nTemplate context: {context}")
             return self.error_method(e, template_name, context)
 
