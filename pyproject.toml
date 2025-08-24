@@ -1,6 +1,6 @@
 [project]
 name = "fastj2"
-version = "0.1.12"
+version = "0.1.13"
 description = ""
 authors = [
     {name = "genderlesspit",email = "59433707+genderlesspit@users.noreply.github.com"}
