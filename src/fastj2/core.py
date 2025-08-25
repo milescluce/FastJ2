@@ -9,47 +9,24 @@ from toomanyconfigs import CWD
 from toomanyconfigs.cwd import CWDNamespace
 import traceback
 
+from .css_body import base, typography
+from .css_animations import particle_anims, entrance, interactive, loading
+from .css_background import gradients, particles
+from .css_buttons import primary, variants, effects
+from .css_components import status, forms, icons
+from .css_containers import cards, modals
+from .css_layout import containers, grid
+from .css_utilities import spacing, text, visibility, responsive
+from .css_vars import css_vars
+from .css_documentation import generate_css_documentation
+from .html_render_error import render_error as html_render_error
+from .html_header import header
 
 file_structure = {
     "templates": {
-        "render_error.html":
-"""
-<html>
-<head><title>Template Error</title></head>
-<body>
-    <h1>Template Rendering Error</h1>
-    <p><strong>Template:</strong> {{ template_name }}</p>
-    <p><strong>Error:</strong> {{ e }}</p>
-
-    <h3>Context Information</h3>
-    {{ context_info }}
-
-    <details>
-        <summary>Full Error Details</summary>
-        <pre>{{ traceback }}</pre>
-    </details>
-</body>
-</html>
-""",
         "html": {
-            "header.html":
-"""
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ fastj2_app_name }}</title>
-    {% if fastj2_css %}
-    <style>
-        {% include "app.css" %}
-    </style>
-    {% endif %}
-    {% if fastj2_js %}
-    <script>
-        {% include "app.js" %}
-    </script>
-    {% endif %}
-</head>           
-""",
+            "header.html": header,
+            "render_error.html": f"{html_render_error}",
             "content": {
 
             }
@@ -58,20 +35,45 @@ file_structure = {
             "1-core": {},
         },
         "css": {
-            "vars.css":
-"""
-:root {
-  --primary-color: #007bff;
-  --font-size-base: 16px;
-}
-""",
-            "1-body": {},
-            "2-background": {},
-            "3-layout": {},     # Grid/flexbox layouts
-            "4-containers": {},
-            "5-components": {}, # Reusable UI components
-            "6-buttons": {},
-            "7-utilities": {}   # Helper classes
+            "vars.css": css_vars,
+            "1-body": {
+                "base.css": base,
+                "typography.css": typography
+            },
+            "2-background": {
+                "gradients.css": gradients,
+                "particles.css": particles,
+            },
+            "3-layout": {
+                "containers.css": containers,
+                "grid.css": grid
+            },
+            "4-containers": {
+                "cards.css": cards,
+                "modals.css": modals,
+            },
+            "5-components": {
+                "icons.css": icons,
+                "forms.css": forms,
+                "status.css": status
+            },
+            "6-buttons": {
+                "primary.css": primary,
+                "variants.css": variants,
+                "effects.css": effects
+            },
+            "7-utilities": {
+                "spacing.css": spacing,
+                "text.css": text,
+                "visibility.css": visibility,
+                "responsive.css": responsive
+            },
+            "8-animations": {
+                "entrance.css": entrance,
+                "interactive.css": interactive,
+                "loading.css": loading,
+                "particle_anims.css": particle_anims
+            },
         }
     }
 }
@@ -162,6 +164,7 @@ class FastJ2(CWD, Environment):
     @cached_property
     def app_css(self) -> str:
         """Get concatenated CSS content"""
+        generate_css_documentation(self.cwd / "templates" / "css")
         css, _ = self._concatenated_files
         path = self.cwd / "templates" / "app.css"
         path.touch(exist_ok=True)
@@ -178,7 +181,7 @@ class FastJ2(CWD, Environment):
             else:
                 context_info += f"<p><strong>{key}:</strong> {str(value)[:100]}...</p>\n"
 
-        template = self.get_template("render_error.html")
+        template = self.get_template("html/render_error.html")
         rendered_html = template.render(
             template_name = template_name,
             e = e,
