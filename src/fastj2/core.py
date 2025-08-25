@@ -21,6 +21,8 @@ from .css_vars import css_vars
 from .css_documentation import generate_css_documentation
 from .html_render_error import render_error as html_render_error
 from .html_header import header
+from .js_core import search_handler
+from .js_documentation import generate_js_documentation
 
 file_structure = {
     "templates": {
@@ -32,7 +34,9 @@ file_structure = {
             }
         },
         "js": {
-            "1-core": {},
+            "1-core": {
+                "search_handler.js": search_handler
+            },
         },
         "css": {
             "vars.css": css_vars,
@@ -156,6 +160,7 @@ class FastJ2(CWD, Environment):
     @cached_property
     def app_js(self) -> str:
         """Get concatenated JavaScript content"""
+        generate_js_documentation(self.cwd / "templates" / "js")
         _ , js = self._concatenated_files
         path = self.cwd / "templates" / "app.js"
         path.write_text(js)
