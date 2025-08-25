@@ -66,6 +66,8 @@ spacing = """
 """
 
 text = """
+/* Complete Text Utilities for 7-utilities/text.css */
+
 /* Text Alignment */
 .text-left { text-align: left; }
 .text-center { text-align: center; }
@@ -89,15 +91,33 @@ text = """
 .text-4xl { font-size: var(--font-size-4xl); }
 .text-5xl { font-size: var(--font-size-5xl); }
 
-/* Text Colors */
-.text-primary { color: var(--primary-blue); }
-.text-success { color: #10b981; }
-.text-error { color: #ef4444; }
-.text-warning { color: #f59e0b; }
-.text-gray-light { color: #9ca3af; }
-.text-gray { color: #6b7280; }
-.text-gray-dark { color: #374151; }
+/* Text Colors - Updated for White Default System */
+.text-primary { color: var(--text-primary); }
+.text-secondary { color: var(--text-secondary); }
+.text-muted { color: var(--text-muted); }
+.text-disabled { color: var(--text-disabled); }
+
+/* Explicit white text variations */
 .text-white { color: white; }
+.text-white-90 { color: rgba(255, 255, 255, 0.9); }
+.text-white-70 { color: rgba(255, 255, 255, 0.7); }
+.text-white-50 { color: rgba(255, 255, 255, 0.5); }
+
+/* Dark text for light backgrounds */
+.text-dark { color: var(--text-dark-primary); }
+.text-dark-secondary { color: var(--text-dark-secondary); }
+.text-dark-muted { color: var(--text-dark-muted); }
+
+/* Status colors - updated for dark backgrounds */
+.text-success { color: var(--text-success); }
+.text-error { color: var(--text-error); }
+.text-warning { color: var(--text-warning); }
+.text-info { color: var(--text-info); }
+
+/* Legacy gray colors - updated for glassmorphism */
+.text-gray-light { color: rgba(255, 255, 255, 0.6); }
+.text-gray { color: rgba(255, 255, 255, 0.8); }
+.text-gray-dark { color: rgba(255, 255, 255, 0.9); }
 
 /* Text Transform */
 .uppercase { text-transform: uppercase; }
@@ -120,9 +140,68 @@ text = """
 .leading-relaxed { line-height: 1.625; }
 .leading-loose { line-height: 2; }
 
-/* Text Effects */
-.text-shadow { text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-.text-shadow-lg { text-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+/* Text Effects - Enhanced for glassmorphism */
+.text-shadow { text-shadow: var(--text-shadow-light); }
+.text-shadow-md { text-shadow: var(--text-shadow-medium); }
+.text-shadow-lg { text-shadow: var(--text-shadow-heavy); }
+.text-shadow-none { text-shadow: none; }
+
+/* Legacy text shadow support */
+.text-shadow-legacy { text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+.text-shadow-lg-legacy { text-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+
+/* Gradient text - only when explicitly wanted */
+.text-gradient {
+  background: var(--gradient-text);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  text-shadow: none;
+}
+
+.text-gradient-primary {
+  background: var(--gradient-primary);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  text-shadow: none;
+}
+
+.text-gradient-success {
+  background: var(--gradient-success);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  text-shadow: none;
+}
+
+/* Theme utilities */
+.theme-light {
+  color: var(--text-dark-primary);
+}
+
+.theme-light h1,
+.theme-light h2,
+.theme-light h3,
+.theme-light h4,
+.theme-light h5,
+.theme-light h6 {
+  color: var(--text-dark-primary);
+  text-shadow: var(--text-shadow-light-theme);
+}
+
+.theme-light p {
+  color: var(--text-dark-secondary);
+  text-shadow: var(--text-shadow-light-theme-medium);
+}
+
+/* Light theme text color overrides */
+.theme-light .text-gray-light { color: #9ca3af; }
+.theme-light .text-gray { color: #6b7280; }
+.theme-light .text-gray-dark { color: #374151; }
 """
 
 visibility = """

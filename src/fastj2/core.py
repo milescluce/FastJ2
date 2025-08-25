@@ -173,13 +173,16 @@ class FastJ2(CWD, Environment):
 
     def render_error(self, e: Exception, template_name: str, context: dict) -> HTMLResponse:
         """Default error handler for template rendering failures"""
-        # Generate context info
         context_info = ""
         for key, value in context.items():
-            if isinstance(value, (dict, list)):
-                context_info += f"<p><strong>{key}:</strong> {len(value)} items</p>\n"
-            else:
-                context_info += f"<p><strong>{key}:</strong> {str(value)[:100]}...</p>\n"
+            try:
+                if isinstance(value, (dict, list)):
+                    context_info += f"<p><strong>{key}:</strong> {len(value)} items</p>\n"
+                else:
+                    context_info += f"<p><strong>{key}:</strong> {str(value)[:100]}...</p>\n"
+            except Exception as e:
+                log.warning(f"{self}: Exception in context truncation: {e}... Skipping...")
+                continue
 
         template = self.get_template("html/render_error.html")
         rendered_html = template.render(
@@ -233,7 +236,11 @@ class FastJ2(CWD, Environment):
             import traceback
             full_traceback = traceback.format_exc()
             for each in context:
-                val = context[each]
-                context[each] = f"{val[:100]} ..."
+                try:
+                    val = context[each]
+                    context[each] = f"{val[:100]} ..."
+                except Exception as e2:
+                    log.warning(f"{self}: Error in context truncation: {e2}... Skipping...")
+                    continue
             log.error(f"{self}: Exception rendering template '{template_name}': {type(e).__name__}: {e}\n{full_traceback}\nTemplate context: {context}")
             return self.error_method(e, template_name, context)
