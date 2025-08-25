@@ -7,18 +7,44 @@ css_vars = """
   --accent-purple: #764ba2;
   --accent-purple-light: #667eea;
 
-  /* Glassmorphism Colors */
-  --glass-white: rgba(255, 255, 255, 0.95);
-  --glass-white-soft: rgba(255, 255, 255, 0.85);
-  --glass-white-subtle: rgba(255, 255, 255, 0.75);
-  --glass-dark: rgba(31, 41, 55, 0.95);
-  --glass-dark-soft: rgba(31, 41, 55, 0.85);
-
-  /* Glass Borders */
-  --glass-border: 1px solid rgba(255, 255, 255, 0.2);
-  --glass-border-strong: 1px solid rgba(255, 255, 255, 0.3);
-  --glass-border-subtle: 1px solid rgba(255, 255, 255, 0.1);
-  --glass-border-dark: 1px solid rgba(255, 255, 255, 0.05);
+ /* TRUE Glassmorphism Colors - The Sweet Spot */
+  --glass-white: rgba(255, 255, 255, 0.25);      /* Perfect balance */
+  --glass-white-soft: rgba(255, 255, 255, 0.2);   /* Lighter */
+  --glass-white-strong: rgba(255, 255, 255, 0.35); /* More opaque */
+  --glass-white-ultra: rgba(255, 255, 255, 0.15);  /* Very light */
+  --glass-dark: rgba(0, 0, 0, 0.25);              /* Dark glass */
+  
+  /* Glassmorphic Borders */
+  --glass-border: 1px solid rgba(255, 255, 255, 0.18);
+  --glass-border-strong: 1px solid rgba(255, 255, 255, 0.25);
+  --glass-border-subtle: 1px solid rgba(255, 255, 255, 0.12);
+  --glass-border-dark: 1px solid rgba(255, 255, 255, 0.1);
+  
+  /* True Glassmorphic Shadows */
+  --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  --shadow-glass-lg: 0 15px 45px 0 rgba(31, 38, 135, 0.5);
+  --shadow-glass-sm: 0 4px 24px 0 rgba(31, 38, 135, 0.3);
+  --shadow-glass-xl: 0 20px 60px 0 rgba(31, 38, 135, 0.6);
+  
+  /* Colored Glass Backgrounds */
+  --glass-blue: rgba(103, 151, 255, 0.2);
+  --glass-purple: rgba(159, 122, 234, 0.2);
+  --glass-success: rgba(34, 197, 94, 0.2);
+  --glass-error: rgba(239, 68, 68, 0.2);
+  --glass-warning: rgba(245, 158, 11, 0.2);
+  
+  /* Colored Glass Shadows */
+  --shadow-glass-blue: 0 8px 32px 0 rgba(103, 151, 255, 0.3);
+  --shadow-glass-purple: 0 8px 32px 0 rgba(159, 122, 234, 0.3);
+  --shadow-glass-success: 0 8px 32px 0 rgba(34, 197, 94, 0.3);
+  --shadow-glass-error: 0 8px 32px 0 rgba(239, 68, 68, 0.3);
+  
+  /* Backdrop Filters */
+  --glass-blur: blur(10px) saturate(180%);
+  --glass-blur-light: blur(8px) saturate(160%);
+  --glass-blur-heavy: blur(15px) saturate(200%);
+  --glass-blur-ultra: blur(20px) saturate(200%) brightness(120%);
+  --glass-blur-frosted: blur(15px) saturate(150%) contrast(110%);
 
   /* Gradients */
   --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -57,6 +83,38 @@ css_vars = """
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
 
+  /* Text Colors - WHITE DEFAULT for glassmorphic design */
+  --text-primary: white;
+  --text-secondary: rgba(255, 255, 255, 0.9);
+  --text-muted: rgba(255, 255, 255, 0.7);
+  --text-disabled: rgba(255, 255, 255, 0.5);
+  
+  /* Link Colors - Light versions for dark backgrounds */
+  --link-primary: #60a5fa;
+  --link-hover: #93c5fd;
+  --link-active: #3b82f6;
+  
+  /* Dark theme text colors - for light backgrounds */
+  --text-dark-primary: #1f2937;
+  --text-dark-secondary: #4b5563;
+  --text-dark-muted: #6b7280;
+  --text-dark-disabled: #9ca3af;
+  
+  /* Status text colors - visible on dark backgrounds */
+  --text-success: #4ade80;
+  --text-error: #f87171;
+  --text-warning: #fbbf24;
+  --text-info: #60a5fa;
+  
+  /* Text shadows */
+  --text-shadow-light: 0 1px 2px rgba(0, 0, 0, 0.2);
+  --text-shadow-medium: 0 2px 4px rgba(0, 0, 0, 0.3);
+  --text-shadow-heavy: 0 3px 6px rgba(0, 0, 0, 0.4);
+  
+  /* Light theme text shadows */
+  --text-shadow-light-theme: 0 1px 2px rgba(255, 255, 255, 0.8);
+  --text-shadow-light-theme-medium: 0 2px 4px rgba(255, 255, 255, 0.6);
+  
   /* Spacing */
   --space-xs: 4px;
   --space-sm: 8px;
@@ -88,5 +146,20 @@ css_vars = """
   --z-overlay: 1000;
   --z-modal: 2000;
   --z-toast: 3000;
+}
+
+.glass-effect {
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+}
+
+.glass-effect-light {
+  backdrop-filter: var(--glass-blur-light);
+  -webkit-backdrop-filter: var(--glass-blur-light);
+}
+
+.glass-effect-heavy {
+  backdrop-filter: var(--glass-blur-heavy);
+  -webkit-backdrop-filter: var(--glass-blur-heavy);
 }
 """
