@@ -105,11 +105,14 @@ class FastJ2(CWD, Environment):
         self.error_method = error_method or self.render_error
         log.success(f"{self}: Successfully initialized FastJ2 Templater for FastAPI with params:\n  - path={self.cwd}\n  - cwd_args={cwd_args}\n  - error_method={self.error_method}")
         self.safe_render = self.render
-        self.default_context = {
+        self.server_context = {
             "fastj2_app_name": self.__class__.__name__
+        }
+        self.client_context = {
         }
         _ = self.app_js
         _ = self.app_css
+
 
     def __repr__(self):
         return f"[FastJ2.{self.cwd.name}]"
@@ -216,7 +219,8 @@ class FastJ2(CWD, Environment):
             template = self.get_template(f"html/content/{template_name}")
             log.debug(f"{self}: About to render template: {template_name}")
             full_context = {
-                **self.default_context,
+                **self.server_context,
+                **self.client_context,
                 **context,
                 "fastj2_css": css,
                 "fastj2_js": js
