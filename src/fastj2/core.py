@@ -1,3 +1,4 @@
+import traceback
 from functools import cached_property
 from pathlib import Path
 from typing import Callable, Optional
@@ -7,91 +8,23 @@ from loguru import logger as log
 from starlette.responses import HTMLResponse
 from toomanyconfigs import CWD
 from toomanyconfigs.cwd import CWDNamespace
-import traceback
 
-from .css_body import base, typography
-from .css_animations import particle_anims, entrance, interactive, loading
-from .css_background import gradients, particles
-from .css_buttons import primary, variants, effects
-from .css_components import status, forms, icons
-from .css_containers import cards, modals
-from .css_layout import containers, grid
-from .css_utilities import spacing, text, visibility, responsive
-from .css_vars import css_vars
 from .css_documentation import generate_css_documentation
-from .html_render_error import render_error as html_render_error
-from .html_header import header
-from .js_core import search_handler
 from .js_documentation import generate_js_documentation
-
-file_structure = {
-    "templates": {
-        "html": {
-            "header.html": header,
-            "render_error.html": f"{html_render_error}",
-            "content": {
-
-            }
-        },
-        "js": {
-            "1-core": {
-                "search_handler.js": search_handler
-            },
-        },
-        "css": {
-            "vars.css": css_vars,
-            "1-body": {
-                "base.css": base,
-                "typography.css": typography
-            },
-            "2-background": {
-                "gradients.css": gradients,
-                "particles.css": particles,
-            },
-            "3-layout": {
-                "containers.css": containers,
-                "grid.css": grid
-            },
-            "4-containers": {
-                "cards.css": cards,
-                "modals.css": modals,
-            },
-            "5-components": {
-                "icons.css": icons,
-                "forms.css": forms,
-                "status.css": status
-            },
-            "6-buttons": {
-                "primary.css": primary,
-                "variants.css": variants,
-                "effects.css": effects
-            },
-            "7-utilities": {
-                "spacing.css": spacing,
-                "text.css": text,
-                "visibility.css": visibility,
-                "responsive.css": responsive
-            },
-            "8-animations": {
-                "entrance.css": entrance,
-                "interactive.css": interactive,
-                "loading.css": loading,
-                "particle_anims.css": particle_anims
-            },
-        }
-    }
-}
+from .themes import choose_theme
 
 
 class FastJ2(CWD, Environment):
     templates: CWDNamespace
 
     def __init__(
-        self,
-        *cwd_args,
-        error_method: Optional[Callable[[Exception, str, dict], HTMLResponse]] = None,
-        cwd: Path = Path.cwd(),
+            self,
+            *cwd_args,
+            error_method: Optional[Callable[[Exception, str, dict], HTMLResponse]] = None,
+            cwd: Path = Path.cwd(),
+            theme: str = "basic"
     ):
+        file_structure = choose_theme(theme)
         CWD.__init__(
             self,
             file_structure,
@@ -103,7 +36,8 @@ class FastJ2(CWD, Environment):
             loader=FileSystemLoader(Path(self.templates._path))  # type: ignore
         )
         self.error_method = error_method or self.render_error
-        log.success(f"{self}: Successfully initialized FastJ2 Templater for FastAPI with params:\n  - path={self.cwd}\n  - cwd_args={cwd_args}\n  - error_method={self.error_method}")
+        log.success(
+            f"{self}: Successfully initialized FastJ2 Templater for FastAPI with params:\n  - path={self.cwd}\n  - cwd_args={cwd_args}\n  - error_method={self.error_method}")
         self.safe_render = self.render
         self.server_context = {
             "fastj2_app_name": self.__class__.__name__
@@ -112,7 +46,6 @@ class FastJ2(CWD, Environment):
         }
         _ = self.app_js
         _ = self.app_css
-
 
     def __repr__(self):
         return f"[FastJ2.{self.cwd.name}]"
@@ -164,7 +97,7 @@ class FastJ2(CWD, Environment):
     def app_js(self) -> str:
         """Get concatenated JavaScript content"""
         generate_js_documentation(self.cwd / "templates" / "js")
-        _ , js = self._concatenated_files
+        _, js = self._concatenated_files
         path = self.cwd / "templates" / "app.js"
         path.write_text(js)
         return js
@@ -194,14 +127,15 @@ class FastJ2(CWD, Environment):
 
         template = self.get_template("html/render_error.html")
         rendered_html = template.render(
-            template_name = template_name,
-            e = e,
-            traceback = traceback.format_exc(),
-            context_info = context_info
+            template_name=template_name,
+            e=e,
+            traceback=traceback.format_exc(),
+            context_info=context_info
         )
         return HTMLResponse(rendered_html, status_code=500)
 
-    def render(self, template_name: str, header: bool = True, css: bool = True, js: bool = True, **context) -> HTMLResponse:
+    def render(self, template_name: str, header: bool = True, css: bool = True, js: bool = True,
+               **context) -> HTMLResponse:
         """
         Safely render a template with comprehensive error handling and fallback.
 
@@ -251,5 +185,6 @@ class FastJ2(CWD, Environment):
                 except Exception as e2:
                     log.warning(f"{self}: Error in context truncation: {e2}... Skipping...")
                     continue
-            log.error(f"{self}: Exception rendering template '{template_name}': {type(e).__name__}: {e}\n{full_traceback}\nTemplate context: {context}")
+            log.error(
+                f"{self}: Exception rendering template '{template_name}': {type(e).__name__}: {e}\n{full_traceback}\nTemplate context: {context}")
             return self.error_method(e, template_name, context)
