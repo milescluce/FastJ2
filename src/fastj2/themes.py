@@ -39,7 +39,7 @@ def file_structure(path: Path):
         path = Path(each)
         name = path.name
         if "vars.css" in str(path):
-            top_level["vars"] = path.read_text()
+            top_level["vars.css"] = path.read_text()
             continue
         else:
             top_level[name] = {}
