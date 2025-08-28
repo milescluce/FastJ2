@@ -42,8 +42,6 @@ class FastJ2(CWD, Environment):
         self.server_context = {
             "fastj2_app_name": self.__class__.__name__
         }
-        self.client_context = {
-        }
         _ = self.app_js
         _ = self.app_css
 
@@ -154,7 +152,6 @@ class FastJ2(CWD, Environment):
             log.debug(f"{self}: About to render template: {template_name}")
             full_context = {
                 **self.server_context,
-                **self.client_context,
                 **context,
                 "fastj2_css": css,
                 "fastj2_js": js

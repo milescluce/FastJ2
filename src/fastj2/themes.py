@@ -19,8 +19,8 @@ THEMES = available_themes()
 FILE_STRUCTURE = {
     "templates": {
         "html": {
-            "header.html": "header",
-            "render_error.html": "{render_error}",
+            "header.html": header,
+            "render_error.html": f"{render_error}",
             "content": {
 
             }
